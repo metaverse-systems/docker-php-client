@@ -48,7 +48,7 @@ trait ContainersTrait
         foreach($result as $config)
         {
             $container = new Container($config);
-            $container->client = $this;
+            $container->setClient($this);
             array_push($containers, $container);
         }
         return $containers;
@@ -63,7 +63,7 @@ trait ContainersTrait
         $result = $this->get($url, $parameters);
 
         $container = new Container($result);
-        $container->client = $this;
+        $container->setClient($this);
         return $container;
     }
 
@@ -90,7 +90,7 @@ trait ContainersTrait
     public function container_new($Name)
     {
         $container = new Container();
-        $container->client = $this;
+        $container->setClient($this);
         $container->Name = $Name;
         return $container;
     }

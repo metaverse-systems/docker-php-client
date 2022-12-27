@@ -24,12 +24,13 @@ class DockerPhpClientProvider extends ServiceProvider
      */
     public function boot()
     {
-print "DockerPhpClientProvider::boot()\n";
-/*
         $this->publishes([
             __DIR__.'/../config/config.php' => config_path('docker-php-client.php'),
         ], 'config');
-*/
+
+        $this->app->bind('docker-php-client', function($app) {
+            return new DockerClient(config('docker-php-client.host'), config('docker-php-client.sock'));
+        });
     }
 }
 

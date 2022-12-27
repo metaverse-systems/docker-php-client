@@ -41,7 +41,7 @@ class Container
     public ContainerState $State;
     public $Status;
 
-    private DockerClient $client = null;
+    private ?DockerClient $client = null;
 
     public function __construct($config = null)
     {
@@ -72,7 +72,7 @@ class Container
 
     public function setClient(DockerClient $client)
     {
-        $this->client = client;
+        $this->client = $client;
     }
 
     public function save()

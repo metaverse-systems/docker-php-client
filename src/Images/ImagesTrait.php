@@ -20,7 +20,7 @@ trait ImagesTrait
         foreach($result as $config)
         {
             $image = new Image($config);
-            $image->client = $this;
+            $image->setClient($this);
             array_push($images, $image);
         }
         return $images;
@@ -33,7 +33,7 @@ trait ImagesTrait
         $result = $this->get($url);
 
         $image = new Image($result);
-        $image->client = $this;
+        $image->setClient($this);
         return $image;
     }
 

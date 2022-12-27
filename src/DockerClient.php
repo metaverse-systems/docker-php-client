@@ -11,24 +11,13 @@ class DockerClient
 {
     use ContainersTrait, ImagesTrait, NetworksTrait, SystemTrait;
 
-    public $host;
-    public int $port;
-    private string $server;
+    private $host;
+    private $sock;
 
-    public function __construct($host, $port = null, $sock = null)
+    public function __construct($host, $sock = null)
     {
         $this->host = $host;
-        $this->port = $port;
         $this->sock = $sock;
-
-        if($port == null)
-        {
-            $this->server = $host;
-        }
-        else
-        {
-            $this->server = $host.":".$port;
-        }
     }
 
     public function get($url, $parameters = array())
@@ -45,7 +34,7 @@ class DockerClient
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->server.$url);
+        curl_setopt($ch, CURLOPT_URL, $this->host.$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if($this->sock)
         {
@@ -80,7 +69,7 @@ class DockerClient
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->server.$url);
+        curl_setopt($ch, CURLOPT_URL, $this->host.$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($ch, CURLOPT_POST, true);
@@ -124,7 +113,7 @@ class DockerClient
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->server.$url);
+        curl_setopt($ch, CURLOPT_URL, $this->host.$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         if($this->sock)

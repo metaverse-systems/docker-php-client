@@ -40,7 +40,7 @@ class Image
     /** List of image names/tags in the local image cache that reference this image. */
     public $RepoTags = array();
 
-    private DockerClient $client;
+    private ?DockerClient $client = null;
 
     public function __construct($config = null)
     {
@@ -65,7 +65,7 @@ class Image
 
     public function setClient(DockerClient $client)
     {
-        $this->client = client;
+        $this->client = $client;
     }
 
     public function delete($force = false, $noprune = false)
