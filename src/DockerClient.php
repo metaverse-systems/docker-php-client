@@ -15,15 +15,20 @@ class DockerClient
     public int $port;
     private string $server;
 
-    public function __construct($host, $port)
+    public function __construct($host, $port = null, $sock = null)
     {
         $this->host = $host;
         $this->port = $port;
+        $this->sock = $sock;
 
-        $protocol = "https://";
-        if($port == 2375) $protocol = "http://";
-
-        $this->server = $protocol.$host.":".$port;
+        if($port == null)
+        {
+            $this->server = $host;
+        }
+        else
+        {
+            $this->server = $host.":".$port;
+        }
     }
 
     public function get($url, $parameters = array())
@@ -42,6 +47,10 @@ class DockerClient
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->server.$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if($this->sock)
+        {
+            curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $this->sock);
+        }
         if(!$result = curl_exec($ch))
         {
             trigger_error(curl_error($ch));
@@ -75,6 +84,10 @@ class DockerClient
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($ch, CURLOPT_POST, true);
+        if($this->sock)
+        {
+            curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $this->sock);
+        }
 
         if($obj !== null)
         {
@@ -114,6 +127,10 @@ class DockerClient
         curl_setopt($ch, CURLOPT_URL, $this->server.$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        if($this->sock)
+        {
+            curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $this->sock);
+        }
 
         if(!$result = curl_exec($ch))
         {
