@@ -47,12 +47,12 @@ class Network
 
     public function connect(Container $Container, EndpointSettings $EndpointConfig = null)
     {
-        $this->network_connect($this, $Container, $EndpointConfig);
+        $this->client->network_connect($this, $Container, $EndpointConfig);
     }
 
     public function disconnect(Container $Container, $force = true)
     {
-        $this->network_disconnect($this, $Container, $force);
+        $this->client->network_disconnect($this, $Container, $force);
     }
 
     public function save()

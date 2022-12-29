@@ -17,6 +17,7 @@ class Container
     public $Created;
     public $Driver;
     public $ExecIDs = array();
+    public $Env = array();
     public GraphDriverData $GraphDriver;
     public HostConfig $HostConfig;
     public $HostnamePath;
@@ -83,5 +84,15 @@ class Container
         }
 
         $this->client->container_create($this);
+    }
+
+    public function start()
+    {
+        if($this->client === null)
+        {
+            throw new \ErrorException("Container::\$client not set to a valid MetaverseSystems\\DockerPhpClient\\DockerClient object.");
+        }
+
+        $this->client->container_start($this);
     }
 }

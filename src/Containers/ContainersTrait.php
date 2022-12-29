@@ -79,11 +79,13 @@ trait ContainersTrait
         return $this->delete($url, $parameters);
     }
 
-    public function container_create(Container $Container)
+    public function container_create(Container $Container, $platform = null)
     {
-        $url = "/containers/create";
+        $url = "/containers/create?";
+        if($Container->name) $url.= "name=".$Container->name."&";
+        if($platform) $url.= "platform=$platform&";
+        
         $result = $this->post($url, $Container);
-        print_r($result);
         return;
     }
 
@@ -93,5 +95,11 @@ trait ContainersTrait
         $container->setClient($this);
         $container->Name = $Name;
         return $container;
+    }
+
+    public function container_start(Container $Container)
+    {
+        $url = "/containers/".$Container->Id."/start";
+        return $this->post($url, null, null);
     }
 }

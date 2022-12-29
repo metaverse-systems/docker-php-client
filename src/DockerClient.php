@@ -46,7 +46,7 @@ class DockerClient
         }
 
         $http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        if($http_code != 200)
+        if($http_code) if($http_code > 299)
         {
             throw new \ErrorException(json_decode($result)->message);
         }
@@ -55,15 +55,19 @@ class DockerClient
         return json_decode($result);
     }
 
-    public function post($url, $obj, $parameters = array())
+    public function post($url, $obj = new \stdClass(), $parameters = null)
     {
-        if(count($parameters))
+        if(($parameters != null) && (count($parameters)))
         {
             $i = 0;
             foreach($parameters as $k=>$v)
             {
                 if($i == 0) $url.= "?$k=$v";
-                else $url.= "&$k=$v";
+                else
+                {
+                    if(!is_array($v)) $url.= "&$k=$v";
+                    // TODO: Handle arrays
+                }
                 $i++;
             }
         }
@@ -71,26 +75,18 @@ class DockerClient
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->host.$url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($ch, CURLOPT_POST, true);
         if($this->sock)
         {
             curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $this->sock);
         }
 
-        if($obj !== null)
-        {
-            $payload = json_encode($obj);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        }
-
-        if(!$result = curl_exec($ch))
-        {
-            trigger_error(curl_error($ch));
-        }
+        $payload = json_encode($obj);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 
         $http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        if($http_code != 200)
+        if($http_code) if($http_code > 299)
         {
             throw new \ErrorException(json_decode($result)->message);
         }
@@ -127,7 +123,7 @@ class DockerClient
         }
 
         $http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        if($http_code != 200)
+        if($http_code) if($http_code > 299)
         {
             throw new \ErrorException(json_decode($result)->message);
         }
