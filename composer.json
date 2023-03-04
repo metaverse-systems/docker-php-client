@@ -25,5 +25,6 @@
     },
     "scripts": {
         "build-docs": "rm -rf docs build && phploc --log-xml phploc.xml src && phpdox && touch docs/.nojekyll"
-    }
+    },
+    "minimum-stability": "dev"
 }
