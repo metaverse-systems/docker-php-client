@@ -3,13 +3,14 @@
 namespace MetaverseSystems\DockerPhpClient;
 
 use MetaverseSystems\DockerPhpClient\Containers\ContainersTrait;
+use MetaverseSystems\DockerPhpClient\Exec\ExecTrait;
 use MetaverseSystems\DockerPhpClient\Images\ImagesTrait;
 use MetaverseSystems\DockerPhpClient\Networks\NetworksTrait;
 use MetaverseSystems\DockerPhpClient\System\SystemTrait;
 
 class DockerClient
 {
-    use ContainersTrait, ImagesTrait, NetworksTrait, SystemTrait;
+    use ContainersTrait, ExecTrait, ImagesTrait, NetworksTrait, SystemTrait;
 
     private $host;
     private $sock;
@@ -40,10 +41,8 @@ class DockerClient
         {
             curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $this->sock);
         }
-        if(!$result = curl_exec($ch))
-        {
-            trigger_error(curl_error($ch));
-        }
+
+        $result = curl_exec($ch);
 
         $http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         if($http_code) if($http_code > 299)
@@ -85,9 +84,12 @@ class DockerClient
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 
+        $result = curl_exec($ch);
+
         $http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         if($http_code) if($http_code > 299)
         {
+print "HTTP code: $http_code\n";
             throw new \ErrorException(json_decode($result)->message);
         }
 

@@ -82,8 +82,10 @@ trait ContainersTrait
     public function container_create(Container $Container, $platform = null)
     {
         $url = "/containers/create?";
-        if($Container->name) $url.= "name=".$Container->name."&";
+        if($Container->Name) $url.= "name=".$Container->Name."&";
         if($platform) $url.= "platform=$platform&";
+
+        print "Posting to $url\n";
         
         $result = $this->post($url, $Container);
         return;
@@ -99,7 +101,7 @@ trait ContainersTrait
 
     public function container_start(Container $Container)
     {
-        $url = "/containers/".$Container->Id."/start";
+        $url = "/containers/".$Container->Name."/start";
         return $this->post($url, null, null);
     }
 }
